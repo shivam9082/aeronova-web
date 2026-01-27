@@ -6,7 +6,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // get user from redux
   const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
@@ -26,7 +25,7 @@ const Navbar = () => {
           className="text-xl font-bold cursor-pointer"
           onClick={() => navigate("/")}
         >
-          AeroNova
+          AeroNova 🚀
         </span>
       </div>
 
@@ -49,23 +48,78 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <div className="flex items-center gap-2">
-              <img
-                src={profileImage}
-                alt="profile"
-                className="w-10 h-10 rounded-full border"
-              />
-              <span className="font-medium">
-                Hello, {user.firstName}
+            {/* Greeting */}
+            <div className="hidden sm:flex flex-col items-end leading-tight">
+              <span className="text-sm text-gray-500">Hi,</span>
+              <span className="text-sm font-semibold text-gray-800">
+                {user.firstName}
               </span>
             </div>
 
-            <button
-              className="btn btn-outline btn-error"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            {/* Profile Dropdown */}
+            <div className="dropdown dropdown-end">
+              <label
+                tabIndex={0}
+                className="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-primary transition"
+              >
+                <div className="w-10 rounded-full">
+                  <img src={profileImage} alt="profile" />
+                </div>
+              </label>
+
+              <ul
+                tabIndex={0}
+                className="
+                  dropdown-content
+                  mt-4
+                  w-56
+                  rounded-xl
+                  bg-base-100
+                  shadow-xl
+                  border border-base-200
+                  p-3
+                  space-y-1
+                "
+              >
+                <li>
+                  <button
+                    onClick={() => navigate("/profile/view")}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition"
+                  >
+                    👤 View Profile
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => navigate("/profile/edit")}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition"
+                  >
+                    ✏️ Edit Profile
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => navigate("/profile/update-password")}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition"
+                  >
+                    🔒 Update Password
+                  </button>
+                </li>
+
+                <div className="divider my-1" />
+
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-error hover:bg-error/10 transition"
+                  >
+                    🚪 Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
           </>
         )}
       </div>
