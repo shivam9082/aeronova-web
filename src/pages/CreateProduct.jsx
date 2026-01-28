@@ -39,11 +39,9 @@ const CreateProduct = () => {
       data.append("category", formData.category);
       data.append("image", image);
 
-      const res = await axios.post(
-        "http://localhost:3000/products",
-        data,
-        { withCredentials: true }
-      );
+      const res = await axios.post("http://localhost:3000/products", data, {
+        withCredentials: true,
+      });
 
       setMessage(res.data.message);
       setFormData({ title: "", description: "", price: "", category: "" });
@@ -85,9 +83,7 @@ const CreateProduct = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <label className="label font-medium pb-0">
-                Product Title
-              </label>
+              <label className="label font-medium pb-0">Product Title</label>
               <input
                 type="text"
                 name="title"
@@ -102,9 +98,7 @@ const CreateProduct = () => {
 
             {/* Description */}
             <div className="space-y-2">
-              <label className="label font-medium pb-0">
-                Description
-              </label>
+              <label className="label font-medium pb-0">Description</label>
               <textarea
                 name="description"
                 className="textarea textarea-bordered w-full"
@@ -119,9 +113,7 @@ const CreateProduct = () => {
 
             {/* Price */}
             <div className="space-y-2">
-              <label className="label font-medium pb-0">
-                Price (₹)
-              </label>
+              <label className="label font-medium pb-0">Price (₹)</label>
               <input
                 type="text"
                 name="price"
@@ -136,9 +128,7 @@ const CreateProduct = () => {
 
             {/* Category */}
             <div className="space-y-2">
-              <label className="label font-medium pb-0">
-                Category
-              </label>
+              <label className="label font-medium pb-0">Category</label>
               <select
                 name="category"
                 className="select select-bordered w-full"
@@ -147,13 +137,18 @@ const CreateProduct = () => {
                 required
               >
                 <option value="">Select Category</option>
-                <option value="software">Government|Smart City</option>
-                <option value="hardware">Sustainable Product</option>
-                <option value="service">Industrial Compliance</option>
-                <option value="service">Renewable Energy</option>
-                <option value="service">Environmental Infrastructure</option>
-                <option value="service">Others</option>
-
+                <option value="Government|Smart City">
+                  Government|Smart City
+                </option>
+                <option value="Sustainable Product">Sustainable Product</option>
+                <option value="Industrial Compliance">
+                  Industrial Compliance
+                </option>
+                <option value="Renewable Energy">Renewable Energy</option>
+                <option value="Environmental Infrastructure">
+                  Environmental Infrastructure
+                </option>
+                <option value="Others">Others</option>
               </select>
             </div>
 
@@ -161,9 +156,7 @@ const CreateProduct = () => {
 
             {/* Image */}
             <div className="space-y-2">
-              <label className="label font-medium pb-0">
-                Product Image
-              </label>
+              <label className="label font-medium pb-0">Product Image</label>
               <input
                 type="file"
                 accept="image/*"
