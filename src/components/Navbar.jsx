@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/slices/authSlice";
+import axios from "axios";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -8,10 +9,26 @@ const Navbar = () => {
 
   const user = useSelector((state) => state.auth.user);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+  try {
+    await axios.post(
+      "http://localhost:3000/logout",
+      {},
+      { withCredentials: true }
+    );
+
+    // Clear redux state after successful logout
+    dispatch(logout());
+
+    navigate("/login");
+  } catch (err) {
+    console.error("Logout failed", err);
+
+    // Even if API fails, clear redux to be safe
     dispatch(logout());
     navigate("/login");
-  };
+  }
+};
 
   const profileImage =
     user?.photoUrl ||
