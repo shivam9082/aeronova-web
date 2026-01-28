@@ -13,7 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
+ const handleLogin = async (e) => {
   e.preventDefault();
   try {
     const res = await axios.post(
@@ -22,27 +22,17 @@ const Login = () => {
       { withCredentials: true }
     );
 
-    // Check if backend returns user info
+    // 🔥 IMPORTANT: use backend user directly
     const userData = res.data.data;
 
-    // Ensure it has required fields for Navbar
-    const userForRedux = {
-      firstName: userData.firstName || "User",
-      lastName: userData.lastName || "",
-      email: userData.email || emailId,
-      photoUrl: userData.photoUrl || "https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff",
-      // add other fields if needed
-    };
+    dispatch(loginSuccess(userData));
 
-    // Dispatch user info to redux
-    dispatch(loginSuccess(userForRedux));
-
-    // Navigate to home after dispatch
     navigate("/");
   } catch (err) {
     setError(err.response?.data?.message || "Login failed");
   }
 };
+
 
 
   return (

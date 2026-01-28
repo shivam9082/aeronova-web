@@ -1,0 +1,46 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { setProducts } from "../redux/slices/productSlice";
+import { useNavigate } from "react-router-dom";
+import ProductCard from "../components/ProductCard";
+
+const ViewAllProducts = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const products = useSelector((state) => state.product.products);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/products");
+        dispatch(setProducts(res.data));
+      } catch (err) {
+        console.error("Failed to fetch products");
+      }
+    };
+
+    fetchProducts();
+  }, [dispatch]);
+
+  return (
+    <div className="min-h-screen bg-base-200 p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">
+        All Products
+      </h1>
+
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {products.map((product) => (
+          <ProductCard
+            key={product._id}
+            product={product}
+            onClick={() => navigate(`/products/${product._id}`)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ViewAllProducts;
