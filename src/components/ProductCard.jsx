@@ -8,10 +8,7 @@ const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
 
   const authUser = useSelector((state) => state.auth.user);
-  const isAdmin = authUser?.role === "admin"; // ✅ ROLE BASED CHECK
-  //const authUser = useSelector((state) => state.auth.user);
-
-  console.log("AUTH USER FROM REDUX 👉", authUser);
+  const isAdmin = authUser?.role === "admin";
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(

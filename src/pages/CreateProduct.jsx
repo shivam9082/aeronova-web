@@ -1,5 +1,23 @@
 import { useState } from "react";
 import axios from "axios";
+import {
+  validateTitle,
+  validateDescription,
+  validatePrice,
+  validateCategory,
+  validateImage,
+} from "../utils/formValidation";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+
+const CATEGORIES = [
+  "Government|Smart City",
+  "Sustainable Product",
+  "Industrial Compliance",
+  "Renewable Energy",
+  "Environmental Infrastructure",
+  "Others",
+];
 
 const CreateProduct = () => {
   const [formData, setFormData] = useState({
@@ -14,15 +32,49 @@ const CreateProduct = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setValidationErrors({ ...validationErrors, [e.target.name]: null });
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
+    const imageError = validateImage(file);
+
+    if (imageError) {
+      setError(imageError);
+      setImage(null);
+      setPreview(null);
+    } else {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+      setError("");
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    const titleError = validateTitle(formData.title);
+    if (titleError) errors.title = titleError;
+
+    const descError = validateDescription(formData.description);
+    if (descError) errors.description = descError;
+
+    const priceError = validatePrice(formData.price);
+    if (priceError) errors.price = priceError;
+
+    const categoryError = validateCategory(formData.category, CATEGORIES);
+    if (categoryError) errors.category = categoryError;
+
+    if (!image) {
+      errors.image = "Image is required";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
@@ -30,6 +82,11 @@ const CreateProduct = () => {
     setLoading(true);
     setMessage("");
     setError("");
+
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
 
     try {
       const data = new FormData();
@@ -39,7 +96,7 @@ const CreateProduct = () => {
       data.append("category", formData.category);
       data.append("image", image);
 
-      const res = await axios.post("http://localhost:3000/products", data, {
+      const res = await axios.post(`${API_URL}/products`, data, {
         withCredentials: true,
       });
 
@@ -47,6 +104,7 @@ const CreateProduct = () => {
       setFormData({ title: "", description: "", price: "", category: "" });
       setImage(null);
       setPreview(null);
+      setValidationErrors({});
     } catch (err) {
       setError(err.response?.data?.error || "Failed to create product");
     } finally {
@@ -87,11 +145,16 @@ const CreateProduct = () => {
               <input
                 type="text"
                 name="title"
-                className="input input-bordered w-full"
+                className={`input input-bordered w-full ${validationErrors.title ? "input-error" : ""}`}
                 value={formData.title}
                 onChange={handleChange}
                 required
               />
+              {validationErrors.title && (
+                <span className="text-error text-sm">
+                  {validationErrors.title}
+                </span>
+              )}
             </div>
 
             <div className="divider my-0" />
@@ -101,12 +164,17 @@ const CreateProduct = () => {
               <label className="label font-medium pb-0">Description</label>
               <textarea
                 name="description"
-                className="textarea textarea-bordered w-full"
+                className={`textarea textarea-bordered w-full ${validationErrors.description ? "textarea-error" : ""}`}
                 rows={3}
                 value={formData.description}
                 onChange={handleChange}
                 required
               />
+              {validationErrors.description && (
+                <span className="text-error text-sm">
+                  {validationErrors.description}
+                </span>
+              )}
             </div>
 
             <div className="divider my-0" />
@@ -117,11 +185,16 @@ const CreateProduct = () => {
               <input
                 type="text"
                 name="price"
-                className="input input-bordered w-full"
+                className={`input input-bordered w-full ${validationErrors.price ? "input-error" : ""}`}
                 value={formData.price}
                 onChange={handleChange}
                 required
               />
+              {validationErrors.price && (
+                <span className="text-error text-sm">
+                  {validationErrors.price}
+                </span>
+              )}
             </div>
 
             <div className="divider my-0" />
@@ -131,7 +204,7 @@ const CreateProduct = () => {
               <label className="label font-medium pb-0">Category</label>
               <select
                 name="category"
-                className="select select-bordered w-full"
+                className={`select select-bordered w-full ${validationErrors.category ? "select-error" : ""}`}
                 value={formData.category}
                 onChange={handleChange}
                 required
@@ -150,6 +223,11 @@ const CreateProduct = () => {
                 </option>
                 <option value="Others">Others</option>
               </select>
+              {validationErrors.category && (
+                <span className="text-error text-sm">
+                  {validationErrors.category}
+                </span>
+              )}
             </div>
 
             <div className="divider my-0" />
@@ -160,10 +238,15 @@ const CreateProduct = () => {
               <input
                 type="file"
                 accept="image/*"
-                className="file-input file-input-bordered w-full"
+                className={`file-input file-input-bordered w-full ${validationErrors.image ? "file-input-error" : ""}`}
                 onChange={handleImageChange}
                 required
               />
+              {validationErrors.image && (
+                <span className="text-error text-sm">
+                  {validationErrors.image}
+                </span>
+              )}
             </div>
 
             <button

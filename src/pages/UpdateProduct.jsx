@@ -22,7 +22,7 @@ const UpdateProduct = () => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/products/${productId}`
+          `http://localhost:3000/products/${productId}`,
         );
         setFormData({
           title: res.data.title,
@@ -55,16 +55,12 @@ const UpdateProduct = () => {
 
     try {
       const data = new FormData();
-      Object.keys(formData).forEach((key) =>
-        data.append(key, formData[key])
-      );
+      Object.keys(formData).forEach((key) => data.append(key, formData[key]));
       if (image) data.append("image", image);
 
-      await axios.put(
-        `http://localhost:3000/products/${productId}`,
-        data,
-        { withCredentials: true }
-      );
+      await axios.put(`http://localhost:3000/products/${productId}`, data, {
+        withCredentials: true,
+      });
 
       navigate("/products");
     } catch (err) {
@@ -78,9 +74,7 @@ const UpdateProduct = () => {
     <div className="min-h-screen flex justify-center items-center bg-base-200">
       <div className="card w-full max-w-lg bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="text-2xl font-bold text-center">
-            Update Product
-          </h2>
+          <h2 className="text-2xl font-bold text-center">Update Product</h2>
 
           {error && <p className="text-red-500 text-center">{error}</p>}
 
@@ -125,9 +119,18 @@ const UpdateProduct = () => {
               className="select select-bordered w-full"
             >
               <option value="">Select Category</option>
-              <option value="software">Software</option>
-              <option value="hardware">Hardware</option>
-              <option value="service">Service</option>
+              <option value="Government|Smart City">
+                Government|Smart City
+              </option>
+              <option value="Sustainable Product">Sustainable Product</option>
+              <option value="Industrial Compliance">
+                Industrial Compliance
+              </option>
+              <option value="Renewable Energy">Renewable Energy</option>
+              <option value="Environmental Infrastructure">
+                Environmental Infrastructure
+              </option>
+              <option value="Others">Others</option>
             </select>
 
             <input
