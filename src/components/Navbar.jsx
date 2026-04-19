@@ -36,7 +36,7 @@ const Navbar = () => {
     "https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff";
 
   return (
-    <div className="navbar bg-gray-900 shadow-md px-6">
+    <div className="navbar bg-gray-900 shadow-md px-6 relative z-50">
       {/* Logo */}
       <div className="flex-1">
         <span
@@ -113,6 +113,7 @@ const Navbar = () => {
                   border border-gray-700
                   p-3
                   space-y-1
+                  z-[100]
                 "
               >
                 {/* Admin-only link */}
