@@ -8,9 +8,6 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { addToCart, increaseQuantity, decreaseQuantity } from "../redux/slices/cartSlice";
 
-const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:3001";
-
 // Formats price as ₹ with Indian locale. Always shows a number.
 const formatPrice = (price) => {
   const numericPrice =

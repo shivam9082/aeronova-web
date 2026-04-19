@@ -19,7 +19,6 @@ const formatPrice = (price) => {
 const UserCard = ({ user, currentUserId, onToggleRole }) => {
   const [loading, setLoading] = useState(false);
 
-  const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase();
   const avatarUrl =
     user.photoUrl ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(

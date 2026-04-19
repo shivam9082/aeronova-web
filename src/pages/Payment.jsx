@@ -31,7 +31,7 @@ const Payment = () => {
     if (validCartItems.length === 0 && !success) {
       navigate("/");
     }
-  }, [cartItems, success, navigate]);
+  }, [validCartItems.length, success, navigate]);
 
   const handlePayment = () => {
     setIsProcessing(true);
