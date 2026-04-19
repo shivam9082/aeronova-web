@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/slices/authSlice";
@@ -13,6 +14,25 @@ const Navbar = () => {
   const cartItems = useSelector((state) => state.cart?.items || []);
   const validCartItems = cartItems.filter((item) => item && item.product && item.product._id);
   const totalCartItems = validCartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+
+  // Custom Dropdown State Handling
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleNavClick = (path) => {
+    setIsDropdownOpen(false);
+    navigate(path);
+  };
 
   const handleLogout = async () => {
     try {
@@ -91,104 +111,109 @@ const Navbar = () => {
             </button>
 
             {/* Profile Dropdown */}
-            <div className="dropdown dropdown-end">
-              <label
-                tabIndex={0}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-primary transition"
               >
                 <div className="w-10 rounded-full">
                   <img src={profileImage} alt="profile" />
                 </div>
-              </label>
+              </button>
 
-              <ul
-                tabIndex={0}
-                className="
-                  dropdown-content
-                  mt-4
-                  w-56
-                  rounded-xl
-                  bg-gray-800
-                  shadow-xl
-                  border border-gray-700
-                  p-3
-                  space-y-1
-                  z-[100]
-                "
-              >
-                {/* Admin-only link */}
-                {user.role === "admin" && (
-                  <>
-                    <li>
-                      <button
-                        onClick={() => navigate("/admin/dashboard")}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-yellow-900/30 text-yellow-400 font-semibold transition"
-                      >
-                        🛡️ Admin Dashboard
-                      </button>
-                    </li>
-                    <div className="divider my-1 bg-gray-700" />
-                  </>
-                )}
+              {isDropdownOpen && (
+                <ul
+                  className="
+                    absolute
+                    right-0
+                    mt-4
+                    w-56
+                    rounded-xl
+                    bg-gray-800
+                    shadow-xl
+                    border border-gray-700
+                    p-3
+                    space-y-1
+                    z-[100]
+                  "
+                >
+                  {/* Admin-only link */}
+                  {user.role === "admin" && (
+                    <>
+                      <li>
+                        <button
+                          onClick={() => handleNavClick("/admin/dashboard")}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-yellow-900/30 text-yellow-400 font-semibold transition w-full text-left"
+                        >
+                          🛡️ Admin Dashboard
+                        </button>
+                      </li>
+                      <div className="divider my-1 bg-gray-700" />
+                    </>
+                  )}
 
-                <li>
-                  <button
-                    onClick={() => navigate("/profile/view")}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition"
-                  >
-                    👤 View Profile
-                  </button>
-                </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavClick("/profile/view")}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition w-full text-left"
+                    >
+                      👤 View Profile
+                    </button>
+                  </li>
 
-                <li>
-                  <button
-                    onClick={() => navigate("/profile/edit")}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition"
-                  >
-                    ✏️ Edit Profile
-                  </button>
-                </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavClick("/profile/edit")}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition w-full text-left"
+                    >
+                      ✏️ Edit Profile
+                    </button>
+                  </li>
 
-                <li>
-                  <button
-                    onClick={() => navigate("/profile/update-password")}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition"
-                  >
-                    🔒 Update Password
-                  </button>
-                </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavClick("/profile/update-password")}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition w-full text-left"
+                    >
+                      🔒 Update Password
+                    </button>
+                  </li>
 
-                <div className="divider my-1 bg-gray-700" />
+                  <div className="divider my-1 bg-gray-700" />
 
-                <li>
-                  <button
-                    onClick={() => navigate("/about")}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition"
-                  >
-                    ℹ️ About Us
-                  </button>
-                </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavClick("/about")}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition w-full text-left"
+                    >
+                      ℹ️ About Us
+                    </button>
+                  </li>
 
-                <li>
-                  <button
-                    onClick={() => navigate("/contact")}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition"
-                  >
-                    📧 Contact Us
-                  </button>
-                </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavClick("/contact")}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 text-gray-300 transition w-full text-left"
+                    >
+                      📧 Contact Us
+                    </button>
+                  </li>
 
-                <div className="divider my-1 bg-gray-700" />
+                  <div className="divider my-1 bg-gray-700" />
 
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-red-400 hover:bg-red-900/20 transition"
-                  >
-                    🚪 Logout
-                  </button>
-                </li>
-              </ul>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleLogout();
+                      }}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-red-400 hover:bg-red-900/20 transition w-full text-left"
+                    >
+                      🚪 Logout
+                    </button>
+                  </li>
+                </ul>
+              )}
             </div>
           </>
         )}
