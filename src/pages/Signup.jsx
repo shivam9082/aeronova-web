@@ -38,7 +38,7 @@ const Signup = () => {
       // 2️⃣ Navigate to home
       navigate("/");
     } catch (err) {
-      setError(err.response?.data || "Signup failed");
+      setError(err.response?.data?.error || err.response?.data?.message || "Signup failed");
     }
   };
 

@@ -16,6 +16,36 @@ const EditProfile = () => {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+    setMessage("");
+
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/profile/upload-photo`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      dispatch(setProfile({ ...user, photoUrl: res.data.photoUrl }));
+      setMessage(res.data.message);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to upload photo");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
@@ -45,13 +75,30 @@ const EditProfile = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
       <div className="card w-full max-w-md bg-base-100 shadow-lg rounded-xl border border-blue-200 p-6">
-        {/* Profile Image */}
-        <div className="flex justify-center mb-6">
+        {/* Profile Image & Upload */}
+        <div className="flex flex-col items-center justify-center mb-6 gap-3">
           <img
             src={profileImage}
             alt="Profile"
-            className="w-28 h-28 rounded-full border-4 border-blue-400 p-1 shadow-md"
+            className="w-28 h-28 rounded-full border-4 border-blue-400 p-1 shadow-md object-cover"
           />
+          <label className="btn btn-sm btn-outline btn-primary rounded-full cursor-pointer relative z-10 hover:shadow-lg transition">
+            {uploading ? (
+              <>
+                <span className="loading loading-spinner loading-xs"></span>
+                Uploading...
+              </>
+            ) : (
+              "📷 Change Photo"
+            )}
+            <input 
+              type="file" 
+              className="hidden" 
+              accept="image/*" 
+              onChange={handlePhotoUpload} 
+              disabled={uploading}
+            />
+          </label>
         </div>
 
         <h2 className="text-2xl font-bold text-center mb-6">Edit Profile</h2>
