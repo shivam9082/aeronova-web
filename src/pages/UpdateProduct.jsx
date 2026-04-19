@@ -22,7 +22,7 @@ const UpdateProduct = () => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/products/${productId}`,
+          `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/products/${productId}`,
         );
         setFormData({
           title: res.data.title,
@@ -58,9 +58,13 @@ const UpdateProduct = () => {
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
       if (image) data.append("image", image);
 
-      await axios.put(`http://localhost:3000/products/${productId}`, data, {
-        withCredentials: true,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/products/${productId}`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       navigate("/products");
     } catch (err) {

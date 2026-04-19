@@ -2,7 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 
 const UpdatePassword = () => {
-  const [passwordData, setPasswordData] = useState({ oldPassword: "", newPassword: "" });
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -13,15 +17,15 @@ const UpdatePassword = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/profile/update-password",
+        `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/profile/update-password`,
         passwordData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setMessage(res.data.message);
       setError("");
-      setPasswordData({ oldPassword: "", newPassword: "" });
+      setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err) {
-      setError(err.response?.data || "Failed to update password");
+      setError(err.response?.data?.error || "Failed to update password");
       setMessage("");
     }
   };
@@ -30,9 +34,13 @@ const UpdatePassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
       <div className="card w-full max-w-md bg-base-100 shadow-xl rounded-lg">
         <div className="card-body">
-          <h2 className="text-2xl font-bold text-center mb-4">Update Password</h2>
+          <h2 className="text-2xl font-bold text-center mb-4">
+            Update Password
+          </h2>
 
-          {message && <p className="text-green-500 text-center mb-2">{message}</p>}
+          {message && (
+            <p className="text-green-500 text-center mb-2">{message}</p>
+          )}
           {error && <p className="text-red-500 text-center mb-2">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -51,6 +59,15 @@ const UpdatePassword = () => {
               placeholder="New Password"
               className="input input-bordered w-full"
               value={passwordData.newPassword}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm New Password"
+              className="input input-bordered w-full"
+              value={passwordData.confirmPassword}
               onChange={handleChange}
               required
             />

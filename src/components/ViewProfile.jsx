@@ -13,10 +13,13 @@ const ViewProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/profile/view", {
-          withCredentials: true,
-        });
-        dispatch(setProfile(res.data));
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/profile/view`,
+          {
+            withCredentials: true,
+          },
+        );
+        dispatch(setProfile(res.data.data));
       } catch (err) {
         setError(err.response?.data || "Failed to fetch profile");
       } finally {
@@ -30,7 +33,9 @@ const ViewProfile = () => {
     return <p className="text-center mt-10 text-lg font-medium">Loading...</p>;
   if (error)
     return (
-      <p className="text-center mt-10 text-red-500 text-lg font-medium">{error}</p>
+      <p className="text-center mt-10 text-red-500 text-lg font-medium">
+        {error}
+      </p>
     );
 
   const profileImage =

@@ -25,15 +25,15 @@ const EditProfile = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/profile/edit",
+        `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/profile/edit`,
         editData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       dispatch(setProfile(res.data.data));
       setMessage(res.data.message);
       setError("");
     } catch (err) {
-      setError(err.response?.data || "Failed to update profile");
+      setError(err.response?.data?.error || "Failed to update profile");
       setMessage("");
     }
   };
@@ -56,7 +56,9 @@ const EditProfile = () => {
 
         <h2 className="text-2xl font-bold text-center mb-6">Edit Profile</h2>
 
-        {message && <p className="text-green-500 text-center mb-2">{message}</p>}
+        {message && (
+          <p className="text-green-500 text-center mb-2">{message}</p>
+        )}
         {error && <p className="text-red-500 text-center mb-2">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -117,9 +119,9 @@ const EditProfile = () => {
               required
             >
               <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Others">Others</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
             </select>
           </div>
 

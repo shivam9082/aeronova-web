@@ -16,13 +16,16 @@ const Body = () => {
   useEffect(() => {
     const fetchUserOnRefresh = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/profile/view", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL || "http://localhost:3001"}/profile/view`,
+          {
+            withCredentials: true,
+          },
+        );
 
         // store user in redux
-        dispatch(loginSuccess(res.data));
-        dispatch(setProfile(res.data));
+        dispatch(loginSuccess(res.data.data));
+        dispatch(setProfile(res.data.data));
       } catch (err) {
         console.log("User not logged in");
       }

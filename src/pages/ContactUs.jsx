@@ -20,12 +20,8 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you can add API call to send email or save to database
-    console.log("Form submitted:", formData);
     setSubmitted(true);
     setFormData({ name: "", email: "", subject: "", message: "" });
-
-    // Reset success message after 3 seconds
     setTimeout(() => setSubmitted(false), 3000);
   };
 

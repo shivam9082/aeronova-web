@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
 const Auth = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
@@ -23,9 +25,9 @@ const Auth = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/login",
+        `${API_URL}/login`,
         { emailId, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Login success", res.data);
@@ -40,7 +42,7 @@ const Auth = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/signup",
+        `${API_URL}/signup`,
         {
           firstName,
           lastName,
@@ -50,7 +52,7 @@ const Auth = () => {
           gender,
           age,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Signup success", res.data);

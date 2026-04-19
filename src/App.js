@@ -9,6 +9,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 // Profile components
 import ViewProfile from "./components/ViewProfile";
 import EditProfile from "./components/EditProfile";
@@ -19,8 +21,11 @@ import SingleProduct from "./pages/SingleProduct";
 import UpdateProduct from "./pages/UpdateProduct";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
+import AdminDashboard from "./pages/AdminDashboard";
+import Cart from "./pages/Cart";
+import Payment from "./pages/Payment";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,7 +37,7 @@ function App() {
         const res = await axios.get(`${API_URL}/profile/view`, {
           withCredentials: true,
         });
-        dispatch(loginSuccess(res.data));
+        dispatch(loginSuccess(res.data.data));
       } catch (err) {
         // User not logged in or session expired - no action needed
         console.log("Not logged in");
@@ -76,6 +81,24 @@ function App() {
               }
             />
 
+            {/* Protected CART & PAYMENT Routes */}
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <Payment />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Protected ADMIN Routes */}
             <Route
               path="/admin/products/create"
@@ -93,6 +116,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="/products" element={<ViewAllProducts />} />
             <Route path="/products/:productId" element={<SingleProduct />} />
@@ -105,6 +136,8 @@ function App() {
           {/* Auth routes without layout */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>

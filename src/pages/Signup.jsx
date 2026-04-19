@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/slices/authSlice";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -28,18 +29,14 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:3000/signup",
-        form,
-        { withCredentials: true }
-      );
+      const res = await axios.post(`${API_URL}/signup`, form, {
+        withCredentials: true,
+      });
       // 1️⃣ Dispatch user to redux
-    dispatch(loginSuccess(res.data.data)); // <-- user data from backend
+      dispatch(loginSuccess(res.data.data)); // <-- user data from backend
 
-        // 2️⃣ Navigate to home
+      // 2️⃣ Navigate to home
       navigate("/");
-
-
     } catch (err) {
       setError(err.response?.data || "Signup failed");
     }
@@ -101,9 +98,9 @@ const Signup = () => {
               required
             >
               <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Others">Others</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
             </select>
 
             <input
@@ -128,9 +125,7 @@ const Signup = () => {
             </button>
           </form>
 
-          {error && (
-            <p className="text-red-500 text-center mt-2">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
           <p
             className="text-center mt-4 text-primary cursor-pointer hover:underline"

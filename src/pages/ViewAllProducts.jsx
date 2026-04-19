@@ -5,7 +5,7 @@ import { setProducts } from "../redux/slices/productSlice";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
 const ViewAllProducts = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const ViewAllProducts = () => {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(`${API_URL}/products`);
-        dispatch(setProducts(res.data));
+        dispatch(setProducts(res.data.data || res.data));
       } catch (err) {
         console.error("Failed to fetch products");
       }
